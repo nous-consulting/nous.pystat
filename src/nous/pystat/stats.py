@@ -1,4 +1,6 @@
 import os.path
+from collections import defaultdict
+
 
 ###########################################################################
 ## Collection data structures
@@ -46,6 +48,8 @@ class CallData(object):
         self.call_count = 0
         self.cum_sample_count = 0
         self.self_sample_count = 0
+        self.d_self_sample_count = defaultdict(int)
+        self.d_cum_sample_count = defaultdict(int)
         call_data[code] = self
 
 def get_call_data(code):
@@ -77,8 +81,36 @@ class CallStats(object):
                                          self.self_secs_in_proc,
                                          self.name)
 
-# Common stat api functions
+class CallStats(object):
+    def __init__(self, call_data):
+        self_samples = call_data.self_sample_count
+        cum_samples = call_data.cum_sample_count
+        nsamples = state.sample_count
+        secs_per_sample = state.accumulated_time / nsamples
+        basename = os.path.basename(call_data.filename)
 
+        self.name = '%s:%d:%s' % (basename, call_data.lineno, call_data.name)
+        self.pcnt_time_in_proc = self_samples / nsamples * 100
+        self.cum_secs_in_proc = cum_samples * secs_per_sample
+        self.self_secs_in_proc = self_samples * secs_per_sample
+        self.num_calls = None
+        self.self_secs_per_call = None
+        self.cum_secs_per_call = None
+        self.d_self_sample_count = call_data.d_self_sample_count
+
+    def display(self):
+        multi_counter_data = ""
+        if self.d_self_sample_count:
+            multi_counter_data = ", ".join([str(item)
+                                            for item in self.d_self_sample_count.items()])
+
+        print '%6.2f %9.2f %9.2f  %s%s' % (self.pcnt_time_in_proc,
+                                           self.cum_secs_in_proc,
+                                           self.self_secs_in_proc,
+                                           self.name,
+                                           multi_counter_data)
+
+# Common stat api functions
 def reset(frequency=None):
     call_data.clear()
     state.reset(frequency)

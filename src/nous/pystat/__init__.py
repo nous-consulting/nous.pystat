@@ -2,7 +2,7 @@
 import sys
 from nous.pystat.stats import (reset as reset_orig,
                                display as display_orig,
-                               state, CallData, call_data)
+                               state, get_call_data)
 
 
 from collections import defaultdict
@@ -13,15 +13,6 @@ def get_frame():
         raise ZeroDivisionError
     except ZeroDivisionError:
         return sys.exc_info()[2].tb_frame.f_back
-
-
-def get_call_data(code):
-    result = call_data.get(code, None)
-    if result is None:
-        result = CallData(code)
-        result.d_self_sample_count = defaultdict(int)
-        result.d_cum_sample_count = defaultdict(int)
-    return result
 
 
 def reset():

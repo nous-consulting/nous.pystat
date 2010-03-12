@@ -1,0 +1,7 @@
+*.pyc
+*~
+src/nous.pystat.egg-info/*
+tags
+TAGS
+ID
+dist/*

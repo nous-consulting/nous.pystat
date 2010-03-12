@@ -1,8 +1,10 @@
 #
 import sys
-from nous.pystat.statprof import (reset as reset_orig,
-                                  display as display_orig,
-                                  state, CallData, call_data)
+from nous.pystat.stats import (reset as reset_orig,
+                               display as display_orig,
+                               state, CallData, call_data)
+
+
 from collections import defaultdict
 
 

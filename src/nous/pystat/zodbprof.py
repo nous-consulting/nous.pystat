@@ -1,20 +1,23 @@
 #
 from decorator import decorator
+from nous.pystat import record_sample, reset, display
+
 
 @decorator
 def zodbprof(fn, *args, **kw):
     from ZODB.Connection import Connection
     old_setstate = Connection.setstate
-    from collections import defaultdict
-    COUNTERS = defaultdict(int)
+
     def monkey_setstate(self, obj):
-        COUNTERS[type(obj)] += 1
+        pickle, serial = obj._p_jar._storage.load(obj._p_oid)
+        size = len(pickle)
+        record_sample(**{str(type(obj)): 1,
+                         'size': size})
         return old_setstate(self, obj)
     try:
+        reset()
         Connection.setstate = monkey_setstate
         return fn(*args, **kw)
     finally:
+        display()
         Connection.setstate = old_setstate
-        stats = sorted(COUNTERS.items(), key=lambda (k, v): v, reverse=True)
-        for k, v in stats[:20]:
-            print "%-10d %s" % (v, k)

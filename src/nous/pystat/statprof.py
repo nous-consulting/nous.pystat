@@ -123,17 +123,17 @@ much as possible.
 
 from __future__ import division
 
-try:
-    import itimer
-except ImportError:
-    raise ImportError('''statprof requires the itimer python extension.
-To install it, enter the following commands from a terminal:
-
-wget http://www.cute.fi/~torppa/py-itimer/py-itimer.tar.gz
-tar zxvf py-itimer.tar.gz
-cd py-itimer
-sudo python setup.py install
-''')
+# try:
+#     import itimer
+# except ImportError:
+#     raise ImportError('''statprof requires the itimer python extension.
+# To install it, enter the following commands from a terminal:
+#
+# wget http://www.cute.fi/~torppa/py-itimer/py-itimer.tar.gz
+# tar zxvf py-itimer.tar.gz
+# cd py-itimer
+# sudo python setup.py install
+# ''')
 
 import signal
 import os

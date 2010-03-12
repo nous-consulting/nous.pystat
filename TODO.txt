@@ -1,0 +1,44 @@
+Plans:
+
+Make statprof use generic stat collecting machinery, doing something like:
+
+def profile_signal_handler(signum, frame):
+    if state.profile_level > 0:
+        record_absolute_sample(seconds=clock())
+        itimer.setitimer(itimer.ITIMER_PROF,
+            state.sample_interval, 0.0)
+        # so we would skip any data changes that happen in the stat collector itself!
+        set_absolute_counter(seconds=clock())
+
+instead of this:
+
+def profile_signal_handler(signum, frame):
+    if state.profile_level > 0:
+        state.accumulate_time(clock())
+        sample_stack_procs(frame)
+        itimer.setitimer(itimer.ITIMER_PROF,
+            state.sample_interval, 0.0)
+        state.last_start_time = clock()
+
+So I'll have to have 2 different stat recorders, the current:
+
+record_sample(counter1=delta1, counter2=delta2)
+
+and one more:
+
+record_absolute_sample(counter1=value1, counter2=value2)
+set_absolute_sample(counter1=value1, counter2=value2)
+
+that would use the difference between the old value and the value
+being recorded as a parameter to the record_sample function
+
+Also display function has to be modified so that statprof profiler
+could do:
+
+def display():
+    from nous.pystat import display
+    display('seconds')
+
+to get the current view. Don't know what to do with the "we have 20
+counters" display yet, the current "use the total of record_sample
+calls number for default ordering" kind of works for ZODB profiling.

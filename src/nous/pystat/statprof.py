@@ -19,6 +19,7 @@
 ## 59 Temple Place - Suite 330        Fax:    +1-617-542-2652
 ## Boston, MA  02111-1307,  USA       gnu@gnu.org
 
+## Downloaded from wingolog.org/pub/statprof.py
 """
 statprof is intended to be a fairly simple statistical profiler for
 python. It was ported directly from a statistical profiler for guile,

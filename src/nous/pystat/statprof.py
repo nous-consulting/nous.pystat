@@ -135,6 +135,7 @@ cd py-itimer
 sudo python setup.py install
 ''')
 
+from decorator import decorator
 import signal
 import os
 
@@ -226,3 +227,24 @@ def display():
     print '---'
     print 'Sample count: %d' % state.sample_count
     print 'Total time: %f seconds' % state.accumulated_time
+
+###########################################################################
+## Convenience function to run some code under the profiler
+## Used it to test the profiler like this:
+##
+## opened bin/start_schooltool_instance script and changed the line:
+##
+##     schooltool.paste.run.main()
+## into:
+##     from nous.pystat.statprof import run
+##     run(schooltool.paste.run.main)
+
+
+def run(fn, *args, **kw):
+    try:
+        reset()
+        start()
+        return fn(*args, **kw)
+    finally:
+        stop()
+        display()

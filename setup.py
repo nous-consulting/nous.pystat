@@ -13,6 +13,7 @@ setup(
                  "Programming Language :: Python"],
     install_requires=[
         'decorator',
+#        'py-itimer' # XXX make it an "extra" dependency, can't recall how now
         ],
     package_dir={'': 'src'},
     packages=find_packages('src'),

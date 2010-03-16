@@ -9,7 +9,7 @@ def zodbprof(fn, *args, **kw):
     old_setstate = Connection.setstate
 
     def monkey_setstate(self, obj):
-        pickle, serial = obj._p_jar._storage.load(obj._p_oid)
+        pickle, serial = obj._p_jar._storage.load(obj._p_oid, self._version)
         size = len(pickle)
         record_sample(**{str(type(obj)): 1,
                          'size': size})
